@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TY.XY沉浸式计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 300px;
+        }
+
+        .calculator-screen {
+            border: none;
+            font-size: 2rem;
+            height: 80px;
+            text-align: right;
+            padding: 0.5rem;
+            outline: none;
+            width: calc(100% - 1rem); /* 调整宽度 */
+        }
+
+        .calculator-keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+        }
+
+        .calculator-keys button {
+            border: none;
+            font-size: 1.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .calculator-keys button:active {
+            background-color: #d4d4d4;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="calculator-screen" id="display" disabled>
+        <div class="calculator-keys">
+            <button>C</button>
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>/</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>*</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>-</button>
+            <button>0</button>
+            <button>.</button>
+            <button id="calculate">=</button>
+            <button>+</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const display = document.getElementById('display');
+            const keys = document.querySelector('.calculator-keys');
+            let firstValue = null;
+            let operator = null;
+
+            keys.addEventListener('click', (event) => {
+                if (event.target.matches('button')) {
+                    const key = event.target;
+                    const action = key.textContent;
+                    const displayedNum = display.value;
+
+                    if (!isNaN(action) || action === '.') {
+                        display.value = displayedNum === '0' ? action : displayedNum + action;
+                    }
+
+                    if (action === 'C') {
+                        display.value = '0';
+                        firstValue = null;
+                        operator = null;
+                    }
+
+                    if (action === '+' || action === '-' || action === '*' || action === '/') {
+                        firstValue = parseFloat(displayedNum);
+                        operator = action;
+                        display.value = '0';
+                    }
+
+                    if (action === '=') {
+                        const secondValue = parseFloat(displayedNum);
+                        
+                        if (operator === '/' && secondValue === 0) {
+                            alert("Cannot divide by zero!");
+                            display.value = '0';
+                            firstValue = null;
+                            operator = null;
+                        } else {
+                            switch (operator) {
+                                case '+':
+                                    display.value = firstValue + secondValue;
+                                    break;
+                                case '-':
+                                    display.value = firstValue - secondValue;
+                                    break;
+                                case '*':
+                                    display.value = firstValue * secondValue;
+                                    break;
+                                case '/':
+                                    display.value = firstValue / secondValue;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            firstValue = null;
+                            operator = null;
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
